@@ -1,10 +1,10 @@
-# Wybieramy oficjalny obraz Node.js jako bazę
-FROM node:20
+# Pierwszy etap: Budowanie aplikacji React (wymaga Node.js i npm)
+FROM node:16 AS build
 
-# Ustawiamy katalog roboczy w kontenerze
+# Ustawiamy katalog roboczy
 WORKDIR /app
 
-# Kopiujemy plik package.json i package-lock.json (lub yarn.lock)
+# Kopiujemy pliki package.json oraz package-lock.json
 COPY package*.json ./
 
 # Instalujemy zależności
@@ -13,11 +13,23 @@ RUN npm install
 # Kopiujemy resztę aplikacji
 COPY . .
 
-# Budujemy aplikację React
+# Budujemy aplikację
 RUN npm run build
 
-# Otwieramy port (jeśli chcesz uruchomić aplikację na porcie)
-EXPOSE 3000
+# Drugi etap: Nginx do serwowania aplikacji
+FROM nginx:alpine
 
-# Uruchamiamy aplikację (jeśli ma być uruchamiana lokalnie, ale w przypadku Netlify nie jest to konieczne)
-CMD ["npm", "start"]
+# Instalujemy Node.js i npm, żeby używać Netlify CLI
+RUN apk add --no-cache nodejs npm
+
+# Kopiujemy zbudowaną aplikację do katalogu Nginx
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Zainstaluj Netlify CLI
+RUN npm install -g netlify-cli
+
+# Ustawiamy port, na którym Nginx będzie działać
+EXPOSE 80
+
+# Uruchamiamy Nginx
+CMD ["nginx", "-g", "daemon off;"]

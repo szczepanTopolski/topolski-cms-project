@@ -10,6 +10,10 @@ RUN yum install -y tar gzip
 # Kopiujemy pliki projektu do kontenera
 COPY . .
 
+
+# Nadajemy uprawnienia do uruchomienia pliku mvnw
+RUN chmod +x ./mvnw
+
 # Budujemy aplikację Spring (plik JAR)
 RUN ./mvnw clean install -DskipTests
 
