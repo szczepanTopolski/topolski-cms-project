@@ -36,9 +36,9 @@ jobs:
         run: |
           docker run --rm -v $(pwd)/build:/app/build ${{ secrets.DOCKER_USERNAME }}/topolski-cms-frontend:latest sh -c "npm install && npm run build"
 
-#      # Instalacja Netlify CLI
-#      - name: Install Netlify CLI
-#        run: npm install -g netlify-cli
+      # Instalacja Netlify CLI
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
 
       # Deploy na Netlify
       - name: Deploy to Netlify

@@ -1,35 +1,29 @@
-# Pierwszy etap: Budowanie aplikacji React (wymaga Node.js i npm)
-FROM node:20 AS build
+# Etap 1: Budowanie aplikacji z Node.js
+FROM node:16 AS build
 
-# Ustawiamy katalog roboczy
+# Ustaw katalog roboczy
 WORKDIR /app
 
-# Kopiujemy pliki package.json oraz package-lock.json
+# Skopiuj pliki zależności
 COPY package*.json ./
 
-# Instalujemy zależności
-RUN npm install
+# Zainstaluj zależności aplikacji
+RUN npm install --legacy-peer-deps
 
-# Kopiujemy resztę aplikacji
+# Skopiuj resztę plików aplikacji
 COPY . .
 
-# Budujemy aplikację
+# Zbuduj aplikację frontendową
 RUN npm run build
 
-# Drugi etap: Nginx do serwowania aplikacji
+# Etap 2: Uruchamianie aplikacji z Nginx
 FROM nginx:alpine
 
-# Instalujemy Node.js i npm, żeby używać Netlify CLI
-RUN apk add --no-cache nodejs npm
-
-# Kopiujemy zbudowaną aplikację do katalogu Nginx
+# Skopiuj zbudowaną aplikację do folderu nginx
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Zainstaluj Netlify CLI
-RUN npm install -g netlify-cli
-
-# Ustawiamy port, na którym Nginx będzie działać
+# Wystaw port 80 do dostępu z zewnątrz
 EXPOSE 80
 
-# Uruchamiamy Nginx
+# Uruchom nginx w tle
 CMD ["nginx", "-g", "daemon off;"]
