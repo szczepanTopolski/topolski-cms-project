@@ -68,7 +68,7 @@ jobs:
 
       # 4. Push the Docker image to Docker Hub
       - name: Push Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/topolski-cms-backend:latest:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/topolski-cms-backend:latest
 
       # 5. Trigger redeployment on Render
       - name: Trigger redeployment on Render

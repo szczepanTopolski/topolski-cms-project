@@ -1,5 +1,5 @@
 # Pierwszy etap: Budowanie aplikacji React (wymaga Node.js i npm)
-FROM node:16 AS build
+FROM node:20 AS build
 
 # Ustawiamy katalog roboczy
 WORKDIR /app
